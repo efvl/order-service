@@ -3,9 +3,24 @@ server:
   servlet:
     context-path: /api
 
+#APP SPECIFIC CUSTOM PROPERTIES
+app:
+  kafka:
+    producer:
+      topic: demo
+
+#SPRING PROPERTIES
 spring:
   application:
     name: order-server
+  kafka:
+    bootstrap-servers:
+      - host.docker.internal:9092
+    producer:
+      retries: 0
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 eureka:
   client:

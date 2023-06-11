@@ -2,6 +2,7 @@ package dev.evv.order.server.controller;
 
 import dev.evv.order.client.model.Order;
 import dev.evv.order.client.vo.OrderStatus;
+import dev.evv.order.server.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class OrderController {
 
     Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private final OrderService orderService;
 
     @Autowired
     private Environment environment;
@@ -32,6 +34,10 @@ public class OrderController {
         }
     };
 
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Order>> findAll(){
         String serverPort = environment.getProperty("local.server.port");
@@ -42,6 +48,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order){
         orders.put(order.getId(), order);
+        orderService.send("created_orderId=" + order.getId());
         return ResponseEntity.ok(order);
     }
 
